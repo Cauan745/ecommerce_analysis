@@ -180,7 +180,7 @@ def satisfaction_analysis(df_final):
         df_trend_clean,
         x="review_delivery_date_difference",
         y="review_score",
-        title="Recency Bias: Nota Média baseada nos Dias após a Entrega (Cleaned)",
+        title="Nota Média baseada nos Dias após a Entrega",
         labels={
             "review_delivery_date_difference": "Dias (Entrega -> Avaliação)",
             "review_score": "Nota Média (Estrelas)",
@@ -210,33 +210,61 @@ def delivery_review_score_correlation(df_final):
         df_avg_delivery,
         x="delivery_time",
         y="review_score",
-        title="Average Delivery Time by Review Score",
+        title="Média de tempo de entrega por nota de avaliação",
         labels={
-            "review_score": "Review Score (Stars)",
-            "delivery_time": "Average Delivery Time (Days)",
+            "review_score": "Nota da avaliação (Estrelas)",
+            "delivery_time": "Tempo Médio de Entrega (Dias)",
         },
         markers=True,
     )
 
     fig.update_layout(xaxis=dict(tickmode="linear", tick0=1, dtick=1))
 
-    st.subheader("Does delivery time affect customer satisfaction?")
+    st.subheader("A demora para entrega afeta a satisfação do cliente?")
     st.metric(
-        label="Spearman Correlation (Delivery Time vs. Review Score)",
+        label="Correlação de Spearman (Tempo de entrega vs. Nota da avaliação)",
         value=corr,
-        delta="Moderate Negative Relationship",
+        delta="Relação negativa moderada",
         delta_color="inverse",
     )
 
     st.write(
-        "Embora a correlação de Spearman (-0.23) seja considerada matematicamente 'fraca/moderada', o gráfico de linhas comprova uma realidade clara do dia a dia: quanto mais dias o pedido demora para chegar, menor tende a ser a nota de satisfação do cliente (Review Score)."
+        "Embora a correlação de Spearman (-0.23) seja considerada matematicamente fraca/moderada, o gráfico de linhas comprova uma realidade clara do dia a dia: quanto mais dias o pedido demora para chegar, menor tende a ser a nota de satisfação do cliente (nota da avaliação)."
     )
 
     st.plotly_chart(fig)
 
 
 def main():
+
+    print_css = """
+        <style>
+        @media print {
+            /* Force the app to expand to its full height */
+            .stApp {
+                height: auto !important;
+                overflow-y: visible !important;
+            }
+            /* Prevent elements and graphs from being cut in half across pages */
+            .element-container, .stPlotlyChart, .stAltairChart {
+                page-break-inside: avoid !important;
+                page-break-after: auto !important;
+            }
+            /* Hide the Streamlit top menu and sidebar for a cleaner PDF */
+            header {
+                display: none !important;
+            }
+            [data-testid="stSidebar"] {
+                display: none !important;
+            }
+        }
+        </style>
+    """
+    st.markdown(print_css, unsafe_allow_html=True)
+
     st.title("Análise de Logística e Satisfação: Olist E-commerce")
+
+    st.write("Discente: Cauan Pereira Ramos")
 
     st.header("1. Introdução")
     st.write("""
@@ -249,7 +277,7 @@ def main():
     st.write("""
     * Avaliar a eficiência logística da Olist (taxa de entregas no prazo vs. atrasadas).
     * Identificar se existe uma concentração de atrasos em determinados estados.
-    * Medir o impacto do tempo de entrega na nota de avaliação (Review Score) deixada pelo cliente.
+    * Medir o impacto do tempo de entrega na nota de avaliação (Nota de avaliação) deixada pelo cliente.
     """)
 
     st.header("3. Metodologia Aplicada")
